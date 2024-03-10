@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -94,25 +96,21 @@ data class NavItemState(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAndBottomBar(modifier: Modifier = Modifier){
-
     val items = listOf(
         NavItemState(
             title = "Home",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home
         ),
-
         NavItemState(
             title = "Watchlist",
             selectedIcon = Icons.Filled.Star,
             unselectedIcon = Icons.Outlined.Star
         )
     )
-
     var bottomNavState by rememberSaveable {
         mutableStateOf(0)
     }
-
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -123,7 +121,6 @@ fun TopAndBottomBar(modifier: Modifier = Modifier){
             })
 
         },
-
         bottomBar = {
             NavigationBar (modifier
                 .clip(RoundedCornerShape(0.dp,0.dp,20.dp,20.dp))) {
@@ -145,7 +142,6 @@ fun TopAndBottomBar(modifier: Modifier = Modifier){
                 }
             }
         }
-
     ) {  contentPadding ->
         MovieList(movies = getMovies())
     }
@@ -169,7 +165,8 @@ fun MovieRow(movie: Movie){
 
     Card(modifier = Modifier
         .fillMaxWidth()
-        .padding(5.dp),
+        .padding(5.dp)
+        .animateContentSize(), //for sizechange
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
@@ -185,17 +182,19 @@ fun MovieRow(movie: Movie){
                     model = movie.images.firstOrNull() ?: "",
                     contentDescription = "Movie Image",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop)
+                    contentScale = ContentScale.Crop
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(10.dp),
                     contentAlignment = Alignment.TopEnd
-                ){
+                ) {
                     Icon(
                         tint = MaterialTheme.colorScheme.secondary,
                         imageVector = Icons.Default.FavoriteBorder,
-                        contentDescription = "Add to favorites")
+                        contentDescription = "Add to favorites"
+                    )
                 }
             }
 
@@ -207,13 +206,46 @@ fun MovieRow(movie: Movie){
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = movie.title)
-                Icon(modifier = Modifier
-                    .clickable {
-                        showDetails = !showDetails
-                    },
-                    imageVector =
-                    if (showDetails) Icons.Filled.KeyboardArrowDown
-                    else Icons.Default.KeyboardArrowUp, contentDescription = "show more")
+                IconButton(onClick = { showDetails = !showDetails }) {
+                    Icon(
+                        imageVector = if (showDetails) Icons.Filled.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Toggle details"
+                    )
+                }
+            }
+
+            if (showDetails) {
+                Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)) {
+                    Text(
+                        text = "Director: ${movie.director}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Year: ${movie.year}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Genre: ${movie.genre}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Actors: ${movie.actors}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Rating: ${movie.rating}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+
+                    //for the line above Plot
+                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(vertical = 8.dp))
+
+                    Text(text = "Plot: ${movie.plot}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }
@@ -223,7 +255,7 @@ fun MovieRow(movie: Movie){
 @Composable
 fun DefaultPreview(){
     MovieAppMAD24Theme {
-        TopAndBottomBar()
+        App()
         //MovieList(movies = getMovies())
     }
 }
