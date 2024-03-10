@@ -116,11 +116,13 @@ fun TopAndBottomBar(modifier: Modifier = Modifier){
             TopAppBar(title = {
                 Box(modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center){
-                    Text(text = "Movie App", color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Movie App",
+                        color = MaterialTheme.colorScheme.primary)
                 }
             })
 
         },
+
         bottomBar = {
             NavigationBar (modifier
                 .clip(RoundedCornerShape(0.dp,0.dp,20.dp,20.dp))) {
@@ -240,7 +242,8 @@ fun MovieRow(movie: Movie){
                     //for the line above Plot
                     Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
                         thickness = 1.dp,
-                        modifier = Modifier.padding(vertical = 8.dp))
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
 
                     Text(text = "Plot: ${movie.plot}",
                         style = MaterialTheme.typography.bodyMedium
