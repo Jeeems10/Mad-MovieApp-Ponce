@@ -56,6 +56,7 @@ import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
@@ -179,10 +180,12 @@ fun MovieRow(movie: Movie){
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.movie_image),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "placeholder image")
+//                is instead of Image that was here before
+                AsyncImage(
+                    model = movie.images.firstOrNull() ?: "",
+                    contentDescription = "Movie Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
